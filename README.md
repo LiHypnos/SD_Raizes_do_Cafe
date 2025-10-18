@@ -2,7 +2,8 @@
 Trabalho feito para a disciplina de Sistemas Distribuídos da Universidade Federal de Lavras, com foco em aproveitamento de IC feita anteriormente
 
 
-#Estrutura
+# Estrutura
+
 /raiz-ai
   ├── frontend/
   ├── api_gateway/
