@@ -5,11 +5,15 @@ const multer = require('multer');
 const upload = multer();
 const app = express();
 
+// recebe a imagem
 app.post("/analisar", upload.single("imagem"), async (req, res) => {
   try {
     // ---- 1. Envia a imagem pro agente de imagem (Python) ----
+    const FormData = require('form-data');
+
+    // Dentro do seu POST
     const formData = new FormData();
-    formData.append("file", req.file.buffer, req.file.originalname);
+    formData.append("imagem", req.file.buffer, { filename: req.file.originalname });
 
     const respostaImagem = await axios.post(
       "http://agente_imagem:5001/processar",
@@ -42,7 +46,7 @@ app.post("/analisar", upload.single("imagem"), async (req, res) => {
 });
 
 
-const port = process.env.port || 5000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
-    console.log(`😎 API Gateway rodando na porta ${PORT}`);
+    console.log(`😎 API Gateway rodando na porta ${port}`);
 });

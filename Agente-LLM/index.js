@@ -52,7 +52,7 @@ async function gerarRespostaLLM(valores, imagemURL) {
   return response.data.choices[0].message.content;
 }
 
-const port = process.env.port || 5002;
+const port = process.env.PORT || 5002;
 app.listen(port, () => {
-    console.log(`🤖 Agente LLM rodando na porta ${PORT}`);
+    console.log(`🤖 Agente LLM rodando na porta ${port}`);
 });
