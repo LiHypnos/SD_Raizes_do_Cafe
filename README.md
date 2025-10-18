@@ -4,7 +4,7 @@ Trabalho feito para a disciplina de Sistemas Distribuídos da Universidade Feder
 
 # Estrutura
 
-/raiz-ai
+/SD_RAIZES_DO_CAFE
   ├── frontend/
   ├── api_gateway/
   ├── agente_imagem/ (Dockerfile)
@@ -14,3 +14,4 @@ Trabalho feito para a disciplina de Sistemas Distribuídos da Universidade Feder
   │    ├── modelagem_ameacas.md
   │    └── arquitetura_final.md
   ├── README.md
+  ├── LICENSE
