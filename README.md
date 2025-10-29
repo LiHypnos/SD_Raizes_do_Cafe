@@ -25,7 +25,7 @@ O trabalho consiste em desenvolver e integrar os seguintes componentes, conforme
         * Recebe o **texto interpretado** do **AGENTE LLM**.
         * Retorna a resposta final para o Front End.
 4.  **AGENTE DE IMAGEM (dockerizado):**
-    * Este componente recebe a imagem enviada pelo *API Gateway*.
+    * Este componente recebe a imagem enviada pelo *API Gateway*, e retorna as informações de 'Comprimento total estimado', 'Volume estimado' e 'Área das raízes' referentes à imagem de uma raiz de café.
     * Processa a imagem e **Retorna o resultado** para o *API Gateway*.
 5.  **AGENTE LLM (dockerizado):**
     * Recebe os dados processados pelo Agente de Imagem através do *API Gateway*.
