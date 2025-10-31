@@ -37,5 +37,3 @@ O trabalho consiste em desenvolver e integrar os seguintes componentes, conforme
 ---
 
 Este trabalho prático de graduação, a ser realizado por um grupo de quatro discentes, exige a implementação de uma arquitetura complexa que integra front-end, serviços de gateway, e agentes de processamento especializados, aplicando diretamente os conceitos de **Sistemas Distribuídos** para resolver um problema que envolve **Inteligência Artificial (LLM) e Visão Computacional**.
-
-Gostaria de um detalhamento de como seria o desenvolvimento do componente **API GATEWAY**?
