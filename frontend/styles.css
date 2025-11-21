@@ -1,0 +1,191 @@
+/* paleta de cores */
+:root {
+    --cor-fundo: #F3E9DC;       
+    --cor-cafe: #6F4E37;        
+    --cor-cafe-escuro: #3b2f2f; 
+    --cor-verde: #4A7c59;       
+    --cor-texto: #333333;
+    --cor-branco: #ffffff;
+    --borda-suave: #cccccc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=1920&auto=format&fit=crop');
+    
+    background-size: cover;       
+    background-position: center;  
+    background-attachment: fixed; 
+    background-repeat: no-repeat;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    
+    /* Cor do texto padrão caso a imagem não carregue */
+    color: var(--cor-texto);
+}
+
+/* card principal  */
+.container {
+    background-color: var(--cor-branco);
+    width: 100%;
+    max-width: 500px; 
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1 {
+    color: var(--cor-cafe);
+    margin-bottom: 0.5rem;
+}
+
+p {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+/* área de Upload */
+.upload-box {
+    border: 2px dashed var(--cor-cafe); 
+    background-color: #fafafa;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+}
+
+.upload-box:hover {
+    background-color: #fdfdfd;
+    border-color: var(--cor-verde);
+}
+
+input[type="file"] {
+    display: block;
+    margin: 0 auto 15px auto;
+    font-size: 0.9rem;
+}
+
+/* botão */
+button {
+    background-color: var(--cor-verde);
+    color: var(--cor-branco);
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #3a6346; 
+    transform: translateY(-2px); 
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* resultados */
+#resultado {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--borda-suave);
+    text-align: left;
+    animation: fadeIn 0.5s ease-in;
+}
+
+#resultado h2 {
+    color: var(--cor-cafe-escuro);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+#resultado p {
+    margin-bottom: 8px;
+    color: var(--cor-texto);
+}
+
+.texto-ia {
+    background-color: #f0f4f8;
+    padding: 15px;
+    border-left: 4px solid var(--cor-cafe);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #444;
+}
+
+.hidden {
+    display: none;
+}
+
+/* texto de instrução */
+.instrucao {
+    color: #555;             
+    font-size: 1.05rem;       
+    line-height: 1.6;         
+    margin-bottom: 2rem;      
+}
+
+.instrucao b {
+    color: var(--cor-verde);  
+    font-weight: 600;
+}
+
+/* Animação suave ao aparecer o resultado */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Esconde o input original feio */
+.input-file-escondido {
+    display: none;
+}
+
+.btn-escolher {
+    display: inline-block;
+    background-color: var(--cor-cafe); 
+    color: var(--cor-branco);
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer; 
+    transition: background-color 0.2s, transform 0.2s;
+    margin-bottom: 10px; 
+    width: 100%; 
+}
+
+.btn-escolher:hover {
+    background-color: var(--cor-cafe-escuro);
+    transform: translateY(-2px);
+}
+
+.icone-upload {
+    margin-right: 8px;
+    font-style: normal;
+}
+
+#nomeArquivo {
+    display: block; 
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+}

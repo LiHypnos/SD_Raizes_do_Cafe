@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raízes do Café</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Raízes do Café</h1>
+        <p class="instrucao">
+            Carregue a imagem de uma raiz de café para iniciar a análise
+            e obter o <b>comprimento</b>, <b>área</b> e <b>volume</b>.
+        </p>
+
+        <div class="upload-box">
+        <input type="file" id="imagemInput" accept="image/*" style="display: none;">
+
+        <label for="imagemInput" class="btn-escolher">
+            <i class="icone-upload">📁</i> Escolher Imagem...
+        </label>
+
+        <span id="nomeArquivo">Nenhum arquivo selecionado</span>
+
+        <button onclick="enviarImagem()" id="btnEnviar">Analisar Raiz</button>
+    </div>
+
+        <div id="resultado" class="hidden">
+            <h2>Resultado da Análise:</h2>
+            <p><strong>Comprimento total estimado:</strong> <span id="resComprimento">-</span></p>
+            <p><strong>Volume estimado:</strong> <span id="resArea">-</span></p>
+            <p><strong>Área das raízes:</strong> <span id="resVolume">-</span></p>
+            
+            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #ddd;">
+            
+            <p><strong>Interpretação da LLM:</strong></p>
+            <div id="resTextoIA" class="texto-ia"></div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
