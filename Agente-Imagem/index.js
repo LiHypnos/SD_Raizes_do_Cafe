@@ -1,44 +1,38 @@
-//ATENÇÃO:
-//ESSE CÓDIGO TAMBÉM DEVE RODAR NO DOCKER, 
-//ENTÃO A INTERAÇÃO COM O USUÁRIO DEVE SER FEITA VIA REQUISIÇÕES HTTP.
-
-import express from "express";
-import { execFile } from "child_process";
-import multer from "multer";
-import fs from "fs";
+// agente-imagem/index.js
+const express = require("express");
+const { execFile } = require("child_process");
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
-// 📷 Endpoint para processar imagem
 app.post("/processar", upload.single("imagem"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ erro: "Nenhuma imagem enviada." });
-  }
+  if (!req.file) return res.status(400).json({ erro: "Nenhuma imagem enviada." });
 
   const imagemPath = req.file.path;
 
-  // Executa o script Python que faz o cálculo
-  execFile("python3", ["calcular.py", imagemPath], (error, stdout, stderr) => {
+  execFile("python3", ["calcular.py", imagemPath], { cwd: __dirname }, (error, stdout, stderr) => {
+    // limpa sempre a imagem temporária
+    try { if (fs.existsSync(imagemPath)) fs.unlinkSync(imagemPath); } catch (e) {}
+
     if (error) {
-      console.error("Erro no processamento:", stderr);
-      fs.unlinkSync(imagemPath); // limpa o arquivo mesmo com erro
-      return res.status(500).json({ erro: "Falha ao processar imagem" });
+      console.error("Erro no processamento (stderr):", stderr);
+      return res.status(500).json({ erro: "Falha ao processar imagem", detalhe: stderr || error.message });
     }
 
-    // O Python deve retornar um JSON como string
-    const resultado = JSON.parse(stdout);
-
-    // Apaga imagem temporária após o uso
-    fs.unlinkSync(imagemPath);
-
-    // Retorna o resultado final
-    res.json(resultado);
+    try {
+      const resultado = JSON.parse(stdout);
+      return res.json(resultado);
+    } catch (e) {
+      console.error("Erro ao parsear JSON do Python:", e, "stdout:", stdout);
+      return res.status(500).json({ erro: "Resposta inválida do serviço de imagem", detalhe: e.message });
+    }
   });
 });
 
-
-const port = process.env.PORT || 5001;
-app.listen(port, () => {
-    console.log(`📷 Agente de Imagem rodando na porta ${port}`);
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => {
+  console.log(`📷 Agente de Imagem rodando na porta ${PORT}`);
 });

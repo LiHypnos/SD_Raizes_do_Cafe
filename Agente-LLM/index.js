@@ -4,20 +4,20 @@ import axios from "axios";
 const app = express();
 app.use(express.json());
 
-// Endpoint que recebe dados do gateway (imagem + resultados numéricos)
-app.post("/analisar", async (req, res) => {
+app.post("/interpretar", async (req, res) => {
   try {
-    const { valores, imagemURL } = req.body;
+    const { analise } = req.body;
 
-    // Aqui o agente LLM interpreta o resultado com base no retorno do Python
-    // modelos disponiveis: OpenAI, Ollama, HuggingFace etc. 
-    // VAMOS PENSAR EM USAR LLAMA PARA NÃO FICAR PESADO
-    const resposta = await gerarRespostaLLM(valores, imagemURL);
+    if (!analise) {
+      return res.status(400).json({ erro: "Nenhum dado recebido do gateway." });
+    }
+
+    const resposta = await gerarRespostaLLM(analise);
 
     res.json({
-      respostaLLM: resposta,
-      imagem: imagemURL,
-      valores,
+      mensagem: resposta,
+      valores: analise,
+      imagem: analise.imagem_resultado_base64
     });
 
   } catch (err) {
@@ -26,15 +26,17 @@ app.post("/analisar", async (req, res) => {
   }
 });
 
-async function gerarRespostaLLM(valores, imagemURL) {
-  // Exemplo com OpenAI
+async function gerarRespostaLLM(analise) {
   const apiKey = process.env.OPENAI_API_KEY;
-  const prompt = `
-  Você é um especialista em análise de imagens agrícolas.
-  O usuário enviou uma imagem e os valores retornados foram:
-  ${JSON.stringify(valores, null, 2)}
 
-  Explique o que esses valores significam e dê um parecer.
+  const prompt = `
+Você é um especialista agrícola.
+O usuário enviou uma imagem, e o agente de imagem calculou:
+
+${JSON.stringify(analise, null, 2)}
+
+Explique o que significa, dê insights,
+e se coloque à disposição para dúvidas.
   `;
 
   const response = await axios.post(
@@ -42,7 +44,7 @@ async function gerarRespostaLLM(valores, imagemURL) {
     {
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "Você é um assistente técnico." },
+        { role: "system", content: "Você é um assistente agrícola especializado." },
         { role: "user", content: prompt },
       ],
     },

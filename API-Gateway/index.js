@@ -5,16 +5,17 @@ const multer = require('multer');
 const upload = multer();
 const app = express();
 
-// recebe a imagem
 app.post("/analisar", upload.single("imagem"), async (req, res) => {
   try {
-    // ---- 1. Envia a imagem pro agente de imagem (Python) ----
-    const FormData = require('form-data');
+    if (!req.file) {
+      return res.status(400).json({ erro: "Nenhuma imagem enviada." });
+    }
 
-    // Dentro do seu POST
+    const FormData = require("form-data");
     const formData = new FormData();
     formData.append("imagem", req.file.buffer, { filename: req.file.originalname });
 
+    // ===== 1 - Envia imagem ao agente de imagem =====
     const respostaImagem = await axios.post(
       "http://agente_imagem:5001/processar",
       formData,
@@ -22,29 +23,28 @@ app.post("/analisar", upload.single("imagem"), async (req, res) => {
     );
 
     const dadosImagem = respostaImagem.data;
-    console.log("📸 Resultado do agente de imagem:", dadosImagem);
 
-    // ---- 2. Envia o resultado pro agente LLM ----
-    const respostaLLM = await axios.post("http://agente_llm:5002/interpretar", {
-      analise: dadosImagem,
-    });
+    // ===== 2 - Envia resultado ao agente LLM =====
+    const respostaLLM = await axios.post(
+      "http://agente_llm:5002/interpretar",
+      { analise: dadosImagem }
+    );
 
     const resultadoFinal = respostaLLM.data;
-    console.log("🧠 Resposta do agente LLM:", resultadoFinal);
 
-    // ---- 3. Retorna pro front-end ----
+    // ===== 3 - Retorna tudo ao front =====
     res.json({
       sucesso: true,
       mensagem: resultadoFinal.mensagem,
-      imagem: dadosImagem.imagem_resultado,
       valores: dadosImagem,
+      imagem: dadosImagem.imagem_resultado_base64
     });
+
   } catch (err) {
-    console.error("❌ Erro no Gateway:", err.message);
-    res.status(500).json({ erro: "Falha na análise da imagem" });
+    console.error("❌ Erro no Gateway:", err);
+    res.status(500).json({ erro: "Falha completa no fluxo de análise" });
   }
 });
-
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

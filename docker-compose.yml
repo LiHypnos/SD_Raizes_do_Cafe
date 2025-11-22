@@ -1,26 +1,25 @@
-version: "3.8"
+version: "3.9"
 
 services:
-
-  agente_imagem:
-    build: ./Agente-Imagem
-    container_name: agente_imagem
-    ports:
-      - "5001:5001"
-
-  agente_llm:
-    build: ./Agente-LLM
-    container_name: agente_llm
-    ports:
-      - "5002:5002"
-    environment:
-      - OPENAI_API_KEY=coloque_sua_chave_aqui
-
-  api_gateway:
-    build: ./API-Gateway
-    container_name: api_gateway
+  gateway:
+    build: ./gateway
+    container_name: gateway
     ports:
       - "5000:5000"
     depends_on:
       - agente_imagem
       - agente_llm
+
+  agente_imagem:
+    build: ./agente_imagem
+    container_name: agente_imagem
+    ports:
+      - "5001:5001"
+
+  agente_llm:
+    build: ./agente_llm
+    container_name: agente_llm
+    ports:
+      - "5002:5002"
+    environment:
+      OPENAI_API_KEY: "${OPENAI_API_KEY}"
