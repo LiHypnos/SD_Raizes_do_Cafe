@@ -1,111 +1,112 @@
-#ATENÇÃO:
-#SEM USO REAL POR ENQUANTO, POIS NÃO ESTAMOS USANDO FLASK AINDA!!
-#ESSE CÓDIGO DEVE RODAR NO DOCKER, ENTÃO A INTERAÇÃO COM O USUÁRIO DEVE SER FEITA VIA REQUISIÇÕES HTTP.
+"""
+calcular.py
 
+Modo CLI/headless para uso em container/microserviço.
+
+Entrada: caminho para a imagem como primeiro argumento de linha de comando.
+Saída: JSON impresso no stdout com os campos:
+  - comprimento_pixels
+  - comprimento_cm
+  - area_raiz_cm2
+  - volume_estimado_cm3
+  - proporcao_area
+  - imagem_resultado_base64 (data URI PNG)
+
+Em caso de erro, retorna um JSON de erro no stderr e sai com código != 0.
+"""
+
+import sys
+import json
+import base64
+import io
+import os
 
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-from skimage.morphology import skeletonize
-from tkinter import Tk, filedialog, messagebox
 from PIL import Image
-import os
-from flask import Flask, request, jsonify
+from skimage.morphology import skeletonize
 
-def main():
-    # Oculta a janela principal do Tkinter
-    Tk().withdraw()
 
-    # Abre diálogo para o usuário selecionar a imagem
-    caminho_imagem = filedialog.askopenfilename(
-        title="Selecione uma imagem",
-        filetypes=[("Arquivos de imagem", "*.png *.jpg *.jpeg *.bmp *.tif *.tiff")]
-    )
-
-    if not caminho_imagem:
-        print("Nenhuma imagem selecionada. Encerrando o programa.")
-        return
-
-    # Verifica se o caminho existe
+def processar_imagem(caminho_imagem: str):
     if not os.path.exists(caminho_imagem):
-        raise FileNotFoundError("Caminho inválido ou imagem não encontrada.")
+        raise FileNotFoundError(f"Arquivo não encontrado: {caminho_imagem}")
 
-    print(f"Carregando imagem: {caminho_imagem}")
+    # Carrega imagem com PIL (mais robusto para formatos variados)
+    img_pil = Image.open(caminho_imagem).convert("RGB")
+    imagem_rgb = np.array(img_pil)
 
-    # 1) Tenta carregar a imagem com PIL (mais robusto para TIFF ou imagens grandes)
-    try:
-        imagem_pil = Image.open(caminho_imagem).convert("RGB")  # garante RGB
-        imagem_rgb = np.array(imagem_pil)
-    except Exception as e:
-        raise FileNotFoundError(f"Erro ao carregar imagem: {e}")
-
-    # 2) Converte para BGR para compatibilidade com OpenCV se necessário
-    imagem_bgr = cv2.cvtColor(imagem_rgb, cv2.COLOR_RGB2BGR)
-
-    # 3) Cria máscara do intervalo de “verde” (ajuste se necessário)
+    # Máscara de cor (intervalo RGB) — ajuste se necessário
     cor_inf = np.array([109, 92, 80], dtype=np.uint8)
     cor_sup = np.array([177, 145, 131], dtype=np.uint8)
     mascara = cv2.inRange(imagem_rgb, cor_inf, cor_sup)
 
-    # 4) Esqueletiza a máscara
+    # binária para operações morfológicas
     binaria = (mascara > 0).astype(np.uint8)
-    skeleton = skeletonize(binaria)
 
-    # 5) Comprimento total das linhas verdes (pixels do esqueleto)
-    comprimento_pixels = np.sum(skeleton)
-    print(f"Comprimento total das linhas verdes (em pixels): {comprimento_pixels}")
+    # esqueletização espera uma matriz booleana 2D
+    skeleton = skeletonize(binaria > 0)
 
-    # 6) Overlay do esqueleto na imagem original
+    comprimento_pixels = int(np.count_nonzero(skeleton))
+
+    # Overlay: marca o esqueleto em vermelho sobre a imagem RGB
     skt_rgb = np.zeros_like(imagem_rgb)
     skt_rgb[skeleton] = [255, 0, 0]
-    overlay = cv2.addWeighted(imagem_rgb, 0.8, skt_rgb, 0.5, 0)
+    overlay = cv2.addWeighted(imagem_rgb.astype(np.uint8), 0.8, skt_rgb.astype(np.uint8), 0.5, 0)
 
-    # 7) Exibe as imagens (só funciona se tiver interface gráfica)
-    plt.figure(figsize=(12, 6))
-    plt.subplot(1, 2, 1)
-    plt.title("Esqueleto das Linhas Verdes")
-    plt.imshow(skeleton, cmap='gray')
-    plt.axis('off')
-
-    plt.subplot(1, 2, 2)
-    plt.title("Overlay do Esqueleto")
-    plt.imshow(overlay)
-    plt.axis('off')
-    plt.tight_layout()
-    plt.show()
-
-    # 8) Conversão de comprimento para cm
+    # Conversão para cm (assume altura física = 23 cm conforme código original)
     altura_pixels = imagem_rgb.shape[0]
-    pixel_por_cm = altura_pixels / 23.0  # 23 cm = altura física
-    comprimento_cm = comprimento_pixels / pixel_por_cm
+    if altura_pixels == 0:
+        raise ValueError("Imagem com altura inválida (0 pixels)")
+    pixel_por_cm = altura_pixels / 23.0
+    comprimento_cm = comprimento_pixels / pixel_por_cm if pixel_por_cm != 0 else 0.0
 
-    print(f"Altura da imagem: {altura_pixels} px → 23 cm")
-    print(f"Cada cm = {pixel_por_cm:.4f} px")
-    print(f"Comprimento total das linhas verdes: {comprimento_cm:.2f} cm")
+    # Área e volume estimado
+    pixels_brancos = int(np.count_nonzero(binaria))
+    pixels_totais = int(imagem_rgb.shape[0] * imagem_rgb.shape[1])
+    proporcao_area = float(pixels_brancos) / pixels_totais if pixels_totais != 0 else 0.0
 
-    # 9) Cálculo da área da raiz e volume estimado
-    pixels_brancos = np.count_nonzero(binaria)
-    pixels_totais = imagem_rgb.shape[0] * imagem_rgb.shape[1]
-    proporcao_area = pixels_brancos / pixels_totais
-    indice = 26.4634
-    volume_estimado = proporcao_area / indice
-
-    # 10) Área da raiz em cm² e volume estimado em cm³
-    largura_pixels = imagem_rgb.shape[1]
     pixel_por_cm2 = pixel_por_cm ** 2
-    area_raiz_cm2 = pixels_brancos / pixel_por_cm2
+    area_raiz_cm2 = pixels_brancos / pixel_por_cm2 if pixel_por_cm2 != 0 else 0.0
 
-    espessura_media_cm = 0.4  # Assumido com base empírica ou medida
+    espessura_media_cm = 0.4
     volume_estimado_cm3 = area_raiz_cm2 * espessura_media_cm
 
+    # Serializa overlay para PNG em memória e codifica em base64 (data URI)
+    overlay_pil = Image.fromarray(overlay)
+    buf = io.BytesIO()
+    overlay_pil.save(buf, format="PNG")
+    buf.seek(0)
+    b64 = base64.b64encode(buf.read()).decode("ascii")
+    data_uri = f"data:image/png;base64,{b64}"
 
-    # Exibe mensagem de conclusão
-    mensagem = (
-        f"Comprimento total estimado: {comprimento_cm:.2f} cm\n"
-        f"Área das raízes: {area_raiz_cm2:.4f} cm²\n"
-        f"Volume estimado: {volume_estimado_cm3:.4f} cm³"
-    )
-    messagebox.showinfo("Resultado da Análise", mensagem)
+    resultado = {
+        "comprimento_pixels": comprimento_pixels,
+        "comprimento_cm": round(float(comprimento_cm), 4),
+        "area_raiz_cm2": round(float(area_raiz_cm2), 6),
+        "volume_estimado_cm3": round(float(volume_estimado_cm3), 6),
+        "proporcao_area": round(float(proporcao_area), 6),
+        "imagem_resultado_base64": data_uri,
+    }
+
+    return resultado
+
+
+def main():
+    if len(sys.argv) < 2:
+        err = {"error": "Uso: python calcular.py <caminho_imagem>"}
+        print(json.dumps(err), file=sys.stderr)
+        sys.exit(2)
+
+    caminho = sys.argv[1]
+    try:
+        resultado = processar_imagem(caminho)
+        # Imprime JSON no stdout para que o processo chamador (index.js) possa capturá-lo
+        print(json.dumps(resultado))
+    except Exception as e:
+        err = {"error": str(e)}
+        print(json.dumps(err), file=sys.stderr)
+        sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
