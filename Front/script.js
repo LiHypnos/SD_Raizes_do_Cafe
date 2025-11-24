@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/analisar'; 
+const API_URL = "http://localhost:5000/analisar"
 
 async function enviarImagem() {
     const input = document.getElementById('imagemInput');
@@ -34,8 +34,7 @@ async function enviarImagem() {
 
         const dados = await resposta.json();
 
-        // Preenche com os dados reais retornados pelo backend
-        // ajustar as chaves conforme o que vem do json
+        // Preenche com os dados retornados pelo backend
         document.getElementById('resComprimento').innerText = dados.valores?.comprimento || dados.comprimento || "-";
         document.getElementById('resArea').innerText = dados.valores?.area || dados.area || "-";
         document.getElementById('resVolume').innerText = dados.valores?.volume || dados.volume || "-";
@@ -53,6 +52,46 @@ async function enviarImagem() {
     } finally {
         btn.innerText = "Analisar Raiz";
         btn.disabled = false;
+    }
+}
+
+async function enviarPergunta() {
+    const input = document.getElementById('chatInput');
+    const history = document.getElementById('chat-history');
+    const btn = document.getElementById('btnChat');
+    const pergunta = input.value;
+
+    if (!pergunta) return;
+
+    // 1. Adiciona pergunta na tela
+    history.innerHTML += `<p class="chat-msg usuario"><strong>Você:</strong> ${pergunta}</p>`;
+    input.value = "";
+    history.scrollTop = history.scrollHeight;
+    btn.disabled = true;
+    btn.innerText = "...";
+
+    try {
+        // 2. Envia para o Backend
+        const resposta = await fetch(`${API_BASE}/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                pergunta: pergunta,
+                contexto: contextoAtual || {} // Manda os dados da raiz junto
+            })
+        });
+
+        const dados = await resposta.json();
+
+        // 3. Adiciona resposta na tela
+        history.innerHTML += `<p class="chat-msg sistema"><strong>IA:</strong> ${dados.resposta}</p>`;
+
+    } catch (erro) {
+        history.innerHTML += `<p class="chat-msg erro">Erro ao conectar com o chat.</p>`;
+    } finally {
+        history.scrollTop = history.scrollHeight;
+        btn.disabled = false;
+        btn.innerText = "Enviar";
     }
 }
 

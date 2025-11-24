@@ -189,3 +189,47 @@ button:disabled {
     color: #666;
     font-style: italic;
 }
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.card-dado {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #eee;
+}
+
+.card-dado .label { display: block; font-size: 0.8rem; color: #666; }
+.card-dado .valor { display: block; font-size: 1.1rem; font-weight: bold; color: var(--cor-cafe); }
+
+/* CHAT */
+.chat-section {
+    margin-top: 30px;
+    border-top: 2px dashed #ddd;
+    padding-top: 20px;
+}
+
+.chat-history {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.chat-msg { margin-bottom: 10px; font-size: 0.9rem; padding: 8px; border-radius: 5px; }
+.chat-msg.sistema { background-color: #e8f5e9; color: #2e7d32; }
+.chat-msg.usuario { background-color: #e3f2fd; color: #1565c0; text-align: right; }
+
+.chat-input-area { display: flex; gap: 10px; }
+#chatInput { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+#btnChat { width: auto; padding: 0 20px; background-color: var(--cor-cafe); }

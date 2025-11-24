@@ -27,19 +27,40 @@
         <button onclick="enviarImagem()" id="btnEnviar">Analisar Raiz</button>
     </div>
 
-        <div id="resultado" class="hidden">
-            <h2>Resultado da Análise:</h2>
-            <p><strong>Comprimento total estimado:</strong> <span id="resComprimento">-</span></p>
-            <p><strong>Volume estimado:</strong> <span id="resArea">-</span></p>
-            <p><strong>Área das raízes:</strong> <span id="resVolume">-</span></p>
+    <div id="resultado" class="hidden">
+            <h2>Resultado da Análise</h2>
+            <div class="cards-grid">
+                <div class="card-dado">
+                    <span class="label">Comprimento</span>
+                    <span class="valor" id="resComprimento">-</span>
+                </div>
+                <div class="card-dado">
+                    <span class="label">Área</span>
+                    <span class="valor" id="resArea">-</span>
+                </div>
+                <div class="card-dado">
+                    <span class="label">Volume</span>
+                    <span class="valor" id="resVolume">-</span>
+                </div>
+            </div>
             
-            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #ddd;">
-            
-            <p><strong>Interpretação da LLM:</strong></p>
-            <div id="resTextoIA" class="texto-ia"></div>
+            <div class="box-ia">
+                <h3>Interpretação da IA</h3>
+                <div id="resTextoIA" class="texto-ia"></div>
+            </div>
 
+            <!-- ÁREA DE CHAT (nao funciona)) -->
+            <div class="chat-section">
+                <h3>💬Chat com Agrônomo Virtual</h3>
+                <div id="chat-history" class="chat-history">
+                    <p class="chat-msg sistema">Olá! Analisei sua raiz. Tem alguma dúvida específica sobre ela?</p>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="Ex: Essa raiz está saudável? O que posso fazer?">
+                    <button onclick="enviarPergunta()" id="btnChat">Enviar</button>
+                </div>
+            </div>
         </div>
-    </div>
 
     <script src="script.js"></script>
 
