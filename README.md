@@ -35,12 +35,12 @@ O trabalho consiste em desenvolver e integrar os seguintes componentes, conforme
     * Sua função é gerar o **texto interpretado** com base nos dados de entrada.
     * **Retorna texto interpretado** ao *API Gateway*.
 
-## 🔐 Modelagem de Ameaças
+### 🔐 Modelagem de Ameaças
 
 O documento completo da modelagem está disponível em:
-(/Docs/modelagem_ameacas_sistema_distribuido.ods)
+[Documento completo da modelagem](./Docs/modelagem_ameacas_sistema_distribuido.ods)
 
-## 🛡️Mitigação implementada (Ameaça #9 — Armazenamento local inseguro)
+### 🛡️ Mitigação implementada (Ameaça #9 — Armazenamento local inseguro)
 
 Na primeira versão, o Gateway usava:
 
@@ -51,7 +51,7 @@ Isso armazenava todas as imagens enviadas no disco do servidor, criando riscos d
 - acúmulo indefinido de arquivos,
 - exposição caso o container fosse acessado indevidamente.
 
-## ✔️ Medidas que foram implementadas
+### ✔️ Medidas que foram implementadas
 
 1. Remoção total do armazenamento em disco
 Agora o upload usa:
@@ -67,10 +67,10 @@ Isso garante que nada seja mantido na memória após a resposta.
 4. Remoção de bases64 antes de enviar ao LLM
 Para evitar exposição da imagem no pipeline interno.
 
-## 🧱 Visão Final da Arquitetura (após mitigação)
-(/Docs)
+### 🧱 Visão Final da Arquitetura (após mitigação)
+[Visão final da Arquitetura](./Docs/)
 
-## 📌 Relevância do Problema
+### 📌 Relevância do Problema
 
 A análise de raízes de café é uma etapa crítica em pesquisas de produção agrícola, melhoramento genético, avaliação de mudas e estudos de desenvolvimento radicular.
 Atualmente, esse processo costuma ser:
@@ -90,13 +90,41 @@ O projeto busca resolver principalmente:
 
 Assim, o sistema oferece processamento automatizado e interpretação textual através de agentes especializados.
 
+### 📚 Referências
+
+LYNCH, J. P. *Root architecture and plant productivity*. **Plant Physiology**, 109(1), 7–13, 1995.
+GREGORY, P. J. *Plant Roots: Growth, Activity and Interactions with the Soil*. **Wiley-Blackwell**, 2006.
+PIERRET, A., et al. *Root Functional Architecture: A Framework for Modeling the Interplay between Roots and Soil*. **Plant and Soil**, 283, 7–20, 2005.
+
 ---
+### 🏃 Execução do Projeto
 
-## 👥 Equipe
+O projeto inclui o script:
+```start.sh```
 
-- Elian
-- Esther
-- Maria
+Ele realiza automaticamente:
+- Build dos serviços
+- Subida do Docker Compose
+- Inicialização do Front-End e agentes
+
+**Para executar:**
+```chmod +x start.sh```
+```./start.sh```
+
+Após a execução:
+
+- O Front-End sobe em: http://localhost:5500/
+- O Gateway responde em: http://localhost:5000/
+- Os agentes sobem nas portas configuradas no docker-compose.
+
+---
+### 👥 Equipe
+
+- Elian Fernando Simões Costa
+- Esther Silva de Magalhães
+- Maria Eduarda Ferreira da Silva
 - Vitória Christie Amaral Santos
 
-Este trabalho prático de graduação, a ser realizado por um grupo de quatro discentes, exige a implementação de uma arquitetura complexa que integra front-end, serviços de gateway, e agentes de processamento especializados, aplicando diretamente os conceitos de **Sistemas Distribuídos** para resolver um problema que envolve **Inteligência Artificial (LLM) e Visão Computacional**.
+O projeto **Raízes do Café** demonstra, na prática, como uma arquitetura distribuída pode integrar serviços especializados para resolver um problema real no contexto agrícola e científico. A combinação entre processamento de imagem, modelos de linguagem e orquestração via API Gateway possibilita uma solução automatizada, escalável e modular, reduzindo a complexidade de análises radiculares tradicionalmente manuais.
+
+Além de atender aos requisitos técnicos da disciplina de Sistemas Distribuídos, o sistema evidencia a importância da divisão de responsabilidades entre serviços, do isolamento por contêineres e das medidas de segurança aplicadas após a modelagem de ameaças. O resultado é uma aplicação completa, funcional e alinhada às boas práticas de desenvolvimento distribuído.
