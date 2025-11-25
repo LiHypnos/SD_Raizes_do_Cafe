@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   gateway:
-    build: ./gateway
+    build: ./API-Gateway
     container_name: gateway
     ports:
       - "5000:5000"
@@ -11,13 +11,13 @@ services:
       - agente_llm
 
   agente_imagem:
-    build: ./agente_imagem
+    build: ./Agente-Imagem
     container_name: agente_imagem
     ports:
       - "5001:5001"
 
   agente_llm:
-    build: ./agente_llm
+    build: ./Agente-LLM
     container_name: agente_llm
     ports:
       - "5002:5002"

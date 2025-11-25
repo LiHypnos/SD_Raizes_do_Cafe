@@ -1,4 +1,7 @@
 const API_URL = "http://localhost:5000/analisar"
+const API_BASE = "http://localhost:5000";
+
+let contextoAtual = {};
 
 async function enviarImagem() {
     const input = document.getElementById('imagemInput');
@@ -41,6 +44,8 @@ async function enviarImagem() {
         
         // texto interpretado do agente LLM
         textoIADiv.innerText = dados.mensagem || dados.analise_llm || "Análise concluída.";
+
+        contextoAtual = dados;
         
         // Mostra o resultado
         resultadoDiv.classList.remove('hidden');
@@ -63,31 +68,48 @@ async function enviarPergunta() {
 
     if (!pergunta) return;
 
-    // 1. Adiciona pergunta na tela
+    // Visual
     history.innerHTML += `<p class="chat-msg usuario"><strong>Você:</strong> ${pergunta}</p>`;
     input.value = "";
     history.scrollTop = history.scrollHeight;
     btn.disabled = true;
     btn.innerText = "...";
 
+    // --- DEBUG LOG ---
+    console.log("🚀 [FRONT] Iniciando envio...");
+    console.log("🔗 [FRONT] URL Alvo:", `${API_BASE}/chat`);
+    console.log("📦 [FRONT] Payload:", JSON.stringify({ pergunta, contexto: contextoAtual }));
+
     try {
-        // 2. Envia para o Backend
         const resposta = await fetch(`${API_BASE}/chat`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                // Adiciona isso para evitar alguns bloqueios de preflight
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({
                 pergunta: pergunta,
-                contexto: contextoAtual || {} // Manda os dados da raiz junto
+                contexto: contextoAtual || {}
             })
         });
 
-        const dados = await resposta.json();
+        console.log("📡 [FRONT] Status da resposta:", resposta.status);
 
-        // 3. Adiciona resposta na tela
+        if (!resposta.ok) {
+            // Tenta ler o erro que o servidor mandou
+            const textoErro = await resposta.text();
+            throw new Error(`Erro do Servidor (${resposta.status}): ${textoErro}`);
+        }
+
+        const dados = await resposta.json();
+        console.log("✅ [FRONT] Dados recebidos:", dados);
+
         history.innerHTML += `<p class="chat-msg sistema"><strong>IA:</strong> ${dados.resposta}</p>`;
 
     } catch (erro) {
-        history.innerHTML += `<p class="chat-msg erro">Erro ao conectar com o chat.</p>`;
+        console.error("❌ [FRONT] Erro capturado no catch:", erro);
+        history.innerHTML += `<p class="chat-msg erro">Erro técnico: ${erro.message}</p>`;
     } finally {
         history.scrollTop = history.scrollHeight;
         btn.disabled = false;
