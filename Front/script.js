@@ -131,3 +131,13 @@ inputArquivo.addEventListener('change', function() {
         spanNomeArquivo.style.fontWeight = 'normal';
     }
 });
+
+const chatInput = document.getElementById('chatInput');
+
+chatInput.addEventListener('keydown', (event) => {
+// Enter SEM Shift envia a mensagem
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        enviarPergunta();
+    }
+});
