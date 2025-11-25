@@ -14,15 +14,15 @@ echo "------------------------------------------------"
 # O flag -d (detached) faz ele rodar em segundo plano
 docker-compose up -d --build
 
-echo "⏳ Aguardando 15 segundos para os servidores ligarem totalmente..."
-sleep 15
+echo "⏳ Aguardando 10 segundos para os servidores ligarem totalmente..."
+sleep 10
 
 echo "------------------------------------------------"
 echo "🌐 Iniciando o FRONT END..."
 echo "------------------------------------------------"
 echo "O site estará disponível na porta 5500."
 echo "⚠️  NÃO FECHE ESTE TERMINAL ENQUANTO ESTIVER USANDO!"
-echo "Para parar tudo depois, aperte Ctrl+C"
+echo "Para parar tudo, aperte Ctrl+C"
 echo "------------------------------------------------"
 
 # Garante que estamos na raiz antes de entrar na pasta
