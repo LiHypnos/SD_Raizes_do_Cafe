@@ -92,9 +92,9 @@ Assim, o sistema oferece processamento automatizado e interpretação textual at
 
 ### 📚 Referências
 
-LYNCH, J. P. *Root architecture and plant productivity*. **Plant Physiology**, 109(1), 7–13, 1995.
-GREGORY, P. J. *Plant Roots: Growth, Activity and Interactions with the Soil*. **Wiley-Blackwell**, 2006.
-PIERRET, A., et al. *Root Functional Architecture: A Framework for Modeling the Interplay between Roots and Soil*. **Plant and Soil**, 283, 7–20, 2005.
+- LYNCH, J. P. *Root architecture and plant productivity*. **Plant Physiology**, 109(1), 7–13, 1995.  
+- GREGORY, P. J. *Plant Roots: Growth, Activity and Interactions with the Soil*. **Wiley-Blackwell**, 2006.  
+- PIERRET, A., et al. *Root Functional Architecture: A Framework for Modeling the Interplay between Roots and Soil*.   **Plant and Soil**, 283, 7–20, 2005.
 
 ---
 ### 🏃 Execução do Projeto
