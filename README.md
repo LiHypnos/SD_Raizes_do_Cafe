@@ -68,7 +68,7 @@ Isso garante que nada seja mantido na memória após a resposta.
 Para evitar exposição da imagem no pipeline interno.
 
 ### 🧱 Visão Final da Arquitetura (após mitigação)
-[Visão final da Arquitetura](./Docs/Arquitetura-2.jpg)
+![Visão final da Arquitetura](./Docs/Arquitetura-2.jpg)
 
 ### 📌 Relevância do Problema
 
