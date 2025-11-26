@@ -13,7 +13,11 @@ app.post("/processar", upload.single("imagem"), (req, res) => {
 
   const imagemPath = req.file.path;
 
-  execFile("python3", ["calcular.py", imagemPath], { cwd: __dirname }, (error, stdout, stderr) => {
+  execFile
+    ("python3", 
+    ["calcular.py", imagemPath], 
+    { cwd: __dirname, maxBuffer: 10 * 1024 * 1024 },
+    (error, stdout, stderr) => {
     // limpa sempre a imagem temporária
     try { if (fs.existsSync(imagemPath)) fs.unlinkSync(imagemPath); } catch (e) {}
 
