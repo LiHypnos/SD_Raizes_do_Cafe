@@ -11,7 +11,7 @@ A aplicação demonstra na prática conceitos essenciais de sistemas distribuíd
 
 ### 📝 Detalhamento da Arquitetura (Fluxo de Trabalho)
 
-![Diagrama da Arquitetura do Sistema Distribuído](Docs/Arquitetura-1.png)
+![Diagrama da Arquitetura do Sistema Distribuído](Docs/Arquitetura-1.jpg)
 
 O trabalho consiste em desenvolver e integrar os seguintes componentes, conforme ilustrado no diagrama:
 
@@ -68,7 +68,7 @@ Isso garante que nada seja mantido na memória após a resposta.
 Para evitar exposição da imagem no pipeline interno.
 
 ### 🧱 Visão Final da Arquitetura (após mitigação)
-[Visão final da Arquitetura](./Docs/)
+[Visão final da Arquitetura](./Docs/Arquitetura-2.jpg)
 
 ### 📌 Relevância do Problema
 
